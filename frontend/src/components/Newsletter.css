@@ -1,0 +1,39 @@
+.newsletter h4 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-gold-light);
+}
+
+.newsletter-compact h4 {
+  font-size: 1.1rem;
+}
+
+.newsletter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.newsletter-form input {
+  flex: 1 1 200px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-cream);
+}
+
+.newsletter-form input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.newsletter-compact .newsletter-form {
+  flex-direction: column;
+}
+
+.newsletter-compact .newsletter-form input,
+.newsletter-compact .newsletter-form button {
+  width: 100%;
+}

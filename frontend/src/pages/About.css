@@ -1,0 +1,46 @@
+.about-intro h2,
+.about-values h2 {
+  color: var(--color-gold-light);
+}
+
+.about-founders {
+  background: var(--color-bg-soft);
+}
+
+.founders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.founder-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+}
+
+.founder-card h3 {
+  color: var(--color-gold-light);
+}
+
+.founder-role {
+  color: var(--color-gold);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.values-grid h3 {
+  font-size: 1.25rem;
+  color: var(--color-gold-light);
+}

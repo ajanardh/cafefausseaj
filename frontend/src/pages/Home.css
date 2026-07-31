@@ -1,0 +1,58 @@
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: grid;
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(26, 31, 22, 0.88), rgba(26, 31, 22, 0.55)),
+    url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80')
+      center / cover no-repeat;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  padding: 6rem 0;
+}
+
+.hero-content p {
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+  max-width: 560px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.home-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.home-info .card h3 {
+  color: var(--color-gold-light);
+}
+
+.home-feature {
+  background: var(--color-bg-soft);
+}
+
+.home-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  align-items: center;
+}
+
+.home-feature-image img {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}

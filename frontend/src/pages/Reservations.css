@@ -1,0 +1,43 @@
+.reservations-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.availability-note {
+  margin: -0.5rem 0 0;
+  font-size: 0.9rem;
+}
+
+.reservation-info h3,
+.reservation-info h4 {
+  color: var(--color-gold-light);
+}
+
+.reservation-hours {
+  margin-top: 1.5rem;
+}
+
+.reservation-hours p {
+  margin-bottom: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 900px) {
+  .reservations-layout {
+    grid-template-columns: 1fr;
+  }
+}
