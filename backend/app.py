@@ -13,8 +13,30 @@ app.config.from_object(Config)
 CORS(app, origins=[origin.strip() for origin in Config.FRONTEND_ORIGINS if origin.strip()])
 db.init_app(app)
 
-with app.app_context():
-    db.create_all()
+
+def init_database():
+    try:
+        with app.app_context():
+            db.create_all()
+    except Exception as exc:
+        # Allow the service to start (health check) even if DB is not ready yet
+        app.logger.warning("Database init skipped at startup: %s", exc)
+
+
+init_database()
+
+
+@app.before_request
+def ensure_database_tables():
+    if request.path == "/api/health":
+        return None
+    if request.path.startswith("/api/"):
+        try:
+            db.create_all()
+        except Exception as exc:
+            app.logger.error("Database unavailable: %s", exc)
+    return None
+
 
 EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 

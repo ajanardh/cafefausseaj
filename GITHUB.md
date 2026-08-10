@@ -66,16 +66,36 @@ GitHub Pages hosts the **front-end only**. To make reservations and newsletter w
 
 ### A. Deploy the backend (free on Render)
 
-1. Push your code to GitHub (including `render.yaml`)
-2. Go to [render.com](https://render.com) → **Sign up** (free) → **New → Blueprint**
-3. Connect your `cafefausseaj` repo — Render reads `render.yaml` automatically
-4. Click **Apply** — creates a Flask API + PostgreSQL database
-5. Wait for deploy to finish (~5 min). Copy your API URL, e.g.:
-   ```
-   https://cafe-fausse-api.onrender.com
-   ```
+1. Push latest code to **`main`** on GitHub
+2. Render → **New → Blueprint** → repo `cafefausseaj` → branch **`main`** → **Apply**
 
-Test it: open `https://cafe-fausse-api.onrender.com/api/health` — should show `{"status":"ok"}`
+**If Blueprint fails, create manually:**
+
+**Step 1 — PostgreSQL database**
+- Render → **New → PostgreSQL** → name: `cafe-fausse-db` → free → **Create**
+- Copy the **Internal Database URL**
+
+**Step 2 — Web service**
+- Render → **New → Web Service** → repo `cafefausseaj`, branch **`main`**
+- **Root Directory:** `backend`
+- **Runtime:** Python 3
+- **Build Command:** `pip install --upgrade pip && pip install -r requirements.txt`
+- **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120`
+- **Environment variables:**
+  - `DATABASE_URL` = Internal Database URL from Step 1
+  - `FRONTEND_ORIGINS` = `https://ajanardh.github.io,http://localhost:5173`
+- **Health Check Path:** `/api/health`
+- Click **Create Web Service**
+
+**Common deploy failures:**
+| Error | Fix |
+|-------|-----|
+| `render.yaml not found on gh-pages` | Use branch **`main`**, not `gh-pages` |
+| Build failed | Root Directory must be **`backend`** |
+| Deploy failed / worker exited | Add **`DATABASE_URL`** env var linked to PostgreSQL |
+| DB connection error | Use **Internal** Database URL, not External |
+
+3. Test: `https://cafe-fausse-api.onrender.com/api/health` → `{"status":"ok"}`
 
 > **Note:** Free Render services spin down after inactivity. First request may take ~30 seconds.
 
