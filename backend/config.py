@@ -5,6 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def normalize_database_url(url):
+    if not url:
+        return url
+    # Render and other hosts provide postgres:// — SQLAlchemy needs postgresql+psycopg://
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+psycopg://", 1)
+    return url
+
+
 def default_database_url():
     user = os.getenv("PGUSER", os.getenv("USER", "postgres"))
     password = os.getenv("PGPASSWORD")
@@ -19,6 +28,12 @@ def default_database_url():
 
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", default_database_url())
+    SQLALCHEMY_DATABASE_URI = normalize_database_url(
+        os.getenv("DATABASE_URL", default_database_url())
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TOTAL_TABLES = 30
+    FRONTEND_ORIGINS = os.getenv(
+        "FRONTEND_ORIGINS",
+        "http://localhost:5173,https://ajanardh.github.io",
+    ).split(",")

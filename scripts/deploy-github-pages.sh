@@ -6,10 +6,18 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REPO="${1:-https://github.com/ajanardh/cafefausseaj.git}"
 REPO_NAME="${2:-cafefausseaj}"
+API_URL="${VITE_API_URL:-}"
+
+if [ -z "$API_URL" ]; then
+  echo "WARNING: VITE_API_URL is not set. Reservations will NOT work on the live site."
+  echo "Set it to your Render backend, e.g.:"
+  echo "  VITE_API_URL=https://cafe-fausse-api.onrender.com/api ./scripts/deploy-github-pages.sh"
+  echo ""
+fi
 
 echo "Building frontend for GitHub Pages (/ ${REPO_NAME} /) ..."
 cd "$ROOT_DIR/frontend"
-VITE_BASE_PATH="/${REPO_NAME}/" npm run build
+VITE_BASE_PATH="/${REPO_NAME}/" VITE_API_URL="$API_URL" npm run build
 
 DEPLOY_DIR=$(mktemp -d)
 cp -R dist/. "$DEPLOY_DIR/"

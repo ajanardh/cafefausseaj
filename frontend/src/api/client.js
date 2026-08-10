@@ -1,4 +1,5 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
+const IS_LOCAL = !import.meta.env.VITE_API_URL;
 
 async function request(path, options = {}) {
   let response;
@@ -13,7 +14,9 @@ async function request(path, options = {}) {
     });
   } catch {
     throw new Error(
-      'Unable to reach the reservation server. Start the backend with: cd backend && source venv/bin/activate && python app.py'
+      IS_LOCAL
+        ? 'Unable to reach the reservation server. Start the backend with: cd backend && source venv/bin/activate && python app.py'
+        : 'Unable to reach the reservation server. The backend may be starting up — wait a minute and try again.'
     );
   }
 

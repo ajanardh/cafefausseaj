@@ -10,8 +10,11 @@ from models import Customer, Reservation, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
-CORS(app)
+CORS(app, origins=[origin.strip() for origin in Config.FRONTEND_ORIGINS if origin.strip()])
 db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 

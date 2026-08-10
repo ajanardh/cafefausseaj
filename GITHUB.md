@@ -62,6 +62,40 @@ Only appears **after** you push the repo (including `.github/workflows/deploy-pa
 
 ## Reservations on the live site
 
-GitHub Pages hosts the front-end only. For reservations/newsletter online, deploy the Flask backend to Render and set `VITE_API_URL` in GitHub repo variables (Method 2 only).
+GitHub Pages hosts the **front-end only**. To make reservations and newsletter work:
 
-For your Quantic demo, running locally with `./scripts/setup-postgres.sh` + backend + frontend is enough to show full functionality.
+### A. Deploy the backend (free on Render)
+
+1. Push your code to GitHub (including `render.yaml`)
+2. Go to [render.com](https://render.com) → **Sign up** (free) → **New → Blueprint**
+3. Connect your `cafefausseaj` repo — Render reads `render.yaml` automatically
+4. Click **Apply** — creates a Flask API + PostgreSQL database
+5. Wait for deploy to finish (~5 min). Copy your API URL, e.g.:
+   ```
+   https://cafe-fausse-api.onrender.com
+   ```
+
+Test it: open `https://cafe-fausse-api.onrender.com/api/health` — should show `{"status":"ok"}`
+
+> **Note:** Free Render services spin down after inactivity. First request may take ~30 seconds.
+
+### B. Redeploy the front-end with the API URL
+
+```bash
+cd ~/Projects/cafe-fausse
+VITE_API_URL=https://cafe-fausse-api.onrender.com/api ./scripts/deploy-github-pages.sh
+```
+
+Replace the URL with your actual Render service URL + `/api`.
+
+Wait 1–2 minutes, then test reservations at https://ajanardh.github.io/cafefausseaj/
+
+### For your Quantic demo
+
+Running locally still works for showing database changes:
+
+```bash
+./scripts/setup-postgres.sh
+cd backend && source venv/bin/activate && python app.py
+cd frontend && npm run dev
+```
