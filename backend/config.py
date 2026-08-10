@@ -8,9 +8,11 @@ load_dotenv()
 def normalize_database_url(url):
     if not url:
         return url
-    # Render and other hosts provide postgres:// — SQLAlchemy needs postgresql+psycopg://
+    # Render provides postgres:// or postgresql:// — force psycopg v3 driver
     if url.startswith("postgres://"):
         return url.replace("postgres://", "postgresql+psycopg://", 1)
+    if url.startswith("postgresql://") and "+" not in url.split("://", 1)[0]:
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
     return url
 
 
