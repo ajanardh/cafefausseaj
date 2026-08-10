@@ -3,6 +3,21 @@
   color: var(--color-gold-light);
 }
 
+.about-intro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  align-items: center;
+}
+
+.about-hero-image {
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
 .about-founders {
   background: var(--color-bg-soft);
 }
@@ -11,14 +26,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-}
-
-.founder-card img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: var(--radius);
-  margin-bottom: 1.25rem;
 }
 
 .founder-card h3 {

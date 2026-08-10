@@ -66,7 +66,9 @@ function Gallery() {
         </div>
       </section>
 
-      <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />
+      {selectedImage && (
+        <Lightbox image={selectedImage} onClose={() => setSelectedImage(null)} />
+      )}
     </>
   );
 }

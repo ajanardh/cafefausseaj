@@ -1,3 +1,4 @@
+import os
 import random
 import re
 from datetime import datetime
@@ -99,6 +100,7 @@ def create_reservation():
 
     reservation = Reservation(
         customer=customer,
+        customer_name=name,
         time_slot=time_slot,
         table_number=table_number,
     )
@@ -159,4 +161,5 @@ def init_db():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True, port=5000)
+    port = int(os.getenv("FLASK_PORT", "5001"))
+    app.run(debug=True, port=port)

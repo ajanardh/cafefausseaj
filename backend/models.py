@@ -32,6 +32,7 @@ class Reservation(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"), nullable=False)
+    customer_name = db.Column(db.String(120), nullable=False)
     time_slot = db.Column(db.DateTime, nullable=False, index=True)
     table_number = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -44,7 +45,7 @@ class Reservation(db.Model):
         return {
             "id": self.id,
             "customer_id": self.customer_id,
+            "customer_name": self.customer_name,
             "time_slot": self.time_slot.isoformat(),
             "table_number": self.table_number,
-            "customer_name": self.customer.name if self.customer else None,
         }

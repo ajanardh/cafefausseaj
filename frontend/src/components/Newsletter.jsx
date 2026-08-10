@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { subscribeNewsletter } from '../api/client';
 import './Newsletter.css';
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function Newsletter({ compact = false }) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState({ type: '', message: '' });
@@ -10,10 +12,16 @@ function Newsletter({ compact = false }) {
   async function handleSubmit(event) {
     event.preventDefault();
     setStatus({ type: '', message: '' });
+
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      setStatus({ type: 'error', message: 'Please enter a valid email address.' });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const result = await subscribeNewsletter({ email });
+      const result = await subscribeNewsletter({ email: email.trim() });
       setStatus({ type: 'success', message: result.message });
       setEmail('');
     } catch (error) {

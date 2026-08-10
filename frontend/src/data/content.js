@@ -93,46 +93,25 @@ export const reviews = [
   },
 ];
 
+export const images = {
+  home: '/images/home-cafe-fausse.webp',
+};
+
 export const galleryImages = [
   {
-    src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
-    alt: 'Elegant restaurant interior with warm ambient lighting',
+    src: '/images/gallery-cafe-interior.webp',
+    alt: 'Elegant Café Fausse interior with warm ambient lighting',
     caption: 'Interior Ambiance',
   },
   {
-    src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
-    alt: 'Fine dining table setting',
-    caption: 'Fine Dining Experience',
+    src: '/images/gallery-ribeye-steak.webp',
+    alt: 'Ribeye steak with garlic mashed potatoes',
+    caption: 'Signature Ribeye Steak',
   },
   {
-    src: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
-    alt: 'Colorful gourmet salad dish',
-    caption: 'Seasonal Starters',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80',
-    alt: 'Grilled steak with sides',
-    caption: 'Signature Main Course',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80',
-    alt: 'Decadent dessert presentation',
-    caption: 'Artisan Desserts',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80',
-    alt: 'Chef preparing dishes in the kitchen',
-    caption: 'Behind the Scenes',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1415201364774-f6f0ff5a3b60?w=800&q=80',
-    alt: 'Special event dining setup',
+    src: '/images/gallery-special-event.webp',
+    alt: 'Special event dining at Café Fausse',
     caption: 'Special Events',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&q=80',
-    alt: 'Wine selection at the bar',
-    caption: 'Curated Wine Selection',
   },
 ];
 

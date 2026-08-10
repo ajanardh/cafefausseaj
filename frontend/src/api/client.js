@@ -1,13 +1,21 @@
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
+  let response;
+
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+  } catch {
+    throw new Error(
+      'Unable to reach the reservation server. Start the backend with: cd backend && source venv/bin/activate && python app.py'
+    );
+  }
 
   const data = await response.json().catch(() => ({}));
 

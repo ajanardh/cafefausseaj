@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { contactInfo } from '../data/content';
+import { contactInfo, images } from '../data/content';
 import './Home.css';
 
 function Home() {
@@ -72,10 +72,7 @@ function Home() {
             </Link>
           </div>
           <div className="home-feature-image">
-            <img
-              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=900&q=80"
-              alt="Chef preparing a gourmet dish"
-            />
+            <img src={images.home} alt="Café Fausse dining room" />
           </div>
         </div>
       </section>
