@@ -2,6 +2,8 @@
 
 Your live URL will be: **https://ajanardh.github.io/cafefausseaj/**
 
+**Render deploy failing?** See [RENDER.md](RENDER.md) for step-by-step fix.
+
 ---
 
 ## Method 1: Deploy from a branch (easiest — recommended)

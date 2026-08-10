@@ -5,8 +5,7 @@ services:
     rootDir: backend
     plan: free
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120
-    healthCheckPath: /api/health
+    startCommand: gunicorn app:app --workers 1 --threads 4 --bind 0.0.0.0:$PORT --timeout 120 --graceful-timeout 120
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.8"
@@ -15,7 +14,7 @@ services:
       - key: DATABASE_URL
         fromDatabase:
           name: cafe-fausse-db
-          property: connectionString
+          property: internalConnectionString
 
 databases:
   - name: cafe-fausse-db

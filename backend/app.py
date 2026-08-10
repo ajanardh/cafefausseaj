@@ -14,28 +14,8 @@ CORS(app, origins=[origin.strip() for origin in Config.FRONTEND_ORIGINS if origi
 db.init_app(app)
 
 
-def init_database():
-    try:
-        with app.app_context():
-            db.create_all()
-    except Exception as exc:
-        # Allow the service to start (health check) even if DB is not ready yet
-        app.logger.warning("Database init skipped at startup: %s", exc)
-
-
-init_database()
-
-
-@app.before_request
-def ensure_database_tables():
-    if request.path == "/api/health":
-        return None
-    if request.path.startswith("/api/"):
-        try:
-            db.create_all()
-        except Exception as exc:
-            app.logger.error("Database unavailable: %s", exc)
-    return None
+def ensure_db():
+    db.create_all()
 
 
 EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
@@ -65,6 +45,11 @@ def assign_table(time_slot):
     return random.choice(available)
 
 
+@app.route("/")
+def root():
+    return jsonify({"status": "ok", "service": "cafe-fausse-api"})
+
+
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"})
@@ -72,6 +57,11 @@ def health():
 
 @app.route("/api/reservations/availability", methods=["GET"])
 def check_availability():
+    try:
+        ensure_db()
+    except Exception:
+        return jsonify({"error": "Database unavailable. Check DATABASE_URL on Render."}), 503
+
     time_slot_raw = request.args.get("time_slot")
     time_slot = parse_time_slot(time_slot_raw)
 
@@ -93,6 +83,11 @@ def check_availability():
 
 @app.route("/api/reservations", methods=["POST"])
 def create_reservation():
+    try:
+        ensure_db()
+    except Exception:
+        return jsonify({"error": "Database unavailable. Check DATABASE_URL on Render."}), 503
+
     data = request.get_json(silent=True) or {}
 
     time_slot = parse_time_slot(data.get("time_slot"))
@@ -148,6 +143,11 @@ def create_reservation():
 
 @app.route("/api/newsletter", methods=["POST"])
 def newsletter_signup():
+    try:
+        ensure_db()
+    except Exception:
+        return jsonify({"error": "Database unavailable. Check DATABASE_URL on Render."}), 503
+
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip()
     name = (data.get("name") or "").strip() or "Newsletter Subscriber"
@@ -185,6 +185,6 @@ def init_db():
 
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()
+        ensure_db()
     port = int(os.getenv("FLASK_PORT", "5001"))
     app.run(debug=True, port=port)
