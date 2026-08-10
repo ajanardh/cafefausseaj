@@ -1,94 +1,103 @@
-# Render Deploy Fix Guide
+# Render Deploy — Fix "Failed deploy" for cafefausseaj
 
-If **cafe-fausse-api** shows **Failed deploy**, follow these steps exactly.
+Your Render service **cafefausseaj** is failing because Render is trying to run the
+**whole repo** instead of the **`backend`** folder where Flask lives.
 
-## Step 1 — Delete the failed service
+---
 
-1. Render dashboard → **cafe-fausse-api**
-2. **Settings** → scroll down → **Delete Web Service**
-3. Confirm delete
+## Option A — Fix existing service (fastest)
 
-(Keep **cafe-fausse-db** PostgreSQL if it exists — do NOT delete the database.)
+1. Open **cafefausseaj** on Render → **Settings**
+2. Change these values **exactly**:
 
-## Step 2 — Push latest code
+| Setting | Value |
+|---------|-------|
+| **Branch** | `main` |
+| **Root Directory** | `backend` |
+| **Build Command** | `pip install --upgrade pip && pip install -r requirements.txt` |
+| **Start Command** | `gunicorn app:app --workers 1 --threads 4 --bind 0.0.0.0:$PORT --timeout 120` |
+| **Health Check Path** | *(leave empty)* |
+
+3. **Environment** tab — add if missing:
+
+| Key | Value |
+|-----|-------|
+| `DATABASE_URL` | Internal Database URL from **cafe-fausse-db** → Connections |
+| `FRONTEND_ORIGINS` | `https://ajanardh.github.io,http://localhost:5173` |
+
+4. **Manual Deploy** → **Deploy latest commit**
+
+---
+
+## Option B — Deploy from repo root (no Root Directory)
+
+If Root Directory is **blank**, use these instead:
+
+| Setting | Value |
+|---------|-------|
+| **Build Command** | `./build.sh` |
+| **Start Command** | `cd backend && gunicorn app:app --workers 1 --threads 4 --bind 0.0.0.0:$PORT --timeout 120` |
+
+(Root `requirements.txt`, `build.sh`, and `Procfile` are included in the repo.)
+
+---
+
+## You MUST have a PostgreSQL database
+
+Without `DATABASE_URL`, reservations fail (health may work).
+
+1. Render → **New +** → **PostgreSQL** → name: `cafe-fausse-db` → Free
+2. Copy **Internal Database URL**
+3. Paste into Web Service → **Environment** → `DATABASE_URL`
+
+---
+
+## Push latest code first
 
 ```bash
 cd ~/Projects/cafe-fausse
 git add .
-git commit -m "Fix Render deploy configuration"
+git commit -m "Add root Render build files"
 git push origin main
 ```
 
-## Step 3 — Create Web Service manually (most reliable)
+Then **Manual Deploy** on Render.
 
-Do **NOT** use Blueprint if it keeps failing. Create manually:
+---
 
-1. Render → **New +** → **Web Service**
-2. Connect **cafefausseaj** repo
-3. Settings:
-
-| Setting | Value |
-|---------|-------|
-| **Name** | `cafe-fausse-api` |
-| **Region** | Same as your PostgreSQL database |
-| **Branch** | `main` |
-| **Root Directory** | `backend` |
-| **Runtime** | Python 3 |
-| **Build Command** | `pip install --upgrade pip && pip install -r requirements.txt` |
-| **Start Command** | `gunicorn app:app --workers 1 --threads 4 --bind 0.0.0.0:$PORT --timeout 120` |
-| **Instance Type** | Free |
-
-4. **Environment Variables** (click Add Environment Variable):
-
-| Key | Value |
-|-----|-------|
-| `DATABASE_URL` | Paste **Internal Database URL** from your PostgreSQL service |
-| `FRONTEND_ORIGINS` | `https://ajanardh.github.io,http://localhost:5173` |
-
-To get Internal Database URL:
-- Open **cafe-fausse-db** → **Connections** → copy **Internal Database URL**
-
-5. **Do NOT set a Health Check Path** (leave blank for now)
-
-6. Click **Create Web Service**
-
-## Step 4 — Wait and test
-
-Deploy takes 3–5 minutes. When status shows **Live**:
+## Test when status = Live
 
 ```
-https://cafe-fausse-api.onrender.com/api/health
+https://cafefausseaj.onrender.com/api/health
 ```
+
+(or whatever URL Render shows for your service)
 
 Expected: `{"status":"ok"}`
 
-First request after idle may take 30–60 seconds (free tier wake-up).
+---
 
-## Step 5 — Connect frontend
+## Read the logs
 
-```bash
-VITE_API_URL=https://cafe-fausse-api.onrender.com/api ./scripts/deploy-github-pages.sh
-```
+**cafefausseaj** → **Logs** tab. Common errors:
 
-## If it fails again
-
-Open **Logs** tab and look for the last red error. Common fixes:
-
-| Error in logs | Fix |
-|---------------|-----|
+| Log line | Meaning |
+|----------|---------|
 | `No module named 'app'` | Root Directory must be `backend` |
-| `could not connect to server` | Set `DATABASE_URL` to Internal Database URL |
-| `ModuleNotFoundError: gunicorn` | Re-deploy after pushing latest `requirements.txt` |
-| `Exited with status 1` | Check full log — usually missing env var |
+| `No such file: requirements.txt` | Use Option B build command or set Root Directory |
+| `could not connect to server` | Add `DATABASE_URL` |
+| `Application failed to respond` | Wrong Start Command |
 
-## For Quantic presentation
+Copy the last error line if still failing.
 
-Use **local** backend for reliable demo:
+---
+
+## Quantic demo (recommended)
+
+Use local backend — always works:
 
 ```bash
 ./scripts/setup-postgres.sh
 cd backend && source venv/bin/activate && python app.py
 cd frontend && npm run dev
 ```
-
-Use GitHub Pages site for design, local for reservations + pgAdmin.
